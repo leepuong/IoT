@@ -5,8 +5,8 @@
 
 const char* targetSSID = "ESP8266_AP";
 
-char auth[] = "MZoNSQwNYJkUJxynBSY7ZZ8cKJtCgRJh";     // Thay bằng Auth Token từ Blynk của bạn
-char ssid[] = "Anytime Coffee";        // Thay bằng tên WiFi của bạn
+char auth[] = "MZoNSQwNYJkUJxynBSY7ZZ8cKJtCgRJh";     // Replace with Auth Token from your Blynk
+char ssid[] = "Anytime Coffee";        // Replace with your WiFi name
 char pass[] = "Camonquykhach";
 
 
@@ -24,7 +24,7 @@ long rssiBuffer[BUFFER_SIZE] = {0};
 int bufferIndex = 0;
 bool offSystem = false;
 
-// Khai báo các biến lưu trạng thái trước của các đèn
+// Declare variables to store the previous state of the lights
 bool redVirtualState = false;
 bool greenVirtualState = false;
 bool lightVirtualState = false;
@@ -32,15 +32,15 @@ bool lightVirtualState = false;
 unsigned long lastBlinkTime = 0;
 bool redBlinkState = false;
 
-// Hàm kiểm tra và đồng bộ trạng thái LED lên Blynk
+// Function to check and synchronize LED status to Blynk
 void syncLEDState(uint8_t ledPin, uint8_t virtualPin, bool &prevState) {
-  // Đọc trạng thái hiện tại của đèn (HIGH hoặc LOW)
+  // Read the current state of the light (HIGH or LOW)
   bool currState = digitalRead(ledPin);
   
-  // Nếu trạng thái thay đổi so với lần cập nhật trước
+  // If the status has changed since the last update
   if (currState != prevState) {
-    prevState = currState;        // Cập nhật lại trạng thái cũ
-    Blynk.virtualWrite(virtualPin, currState);  // Đồng bộ trạng thái lên Blynk
+    prevState = currState;        // Update old status
+    Blynk.virtualWrite(virtualPin, currState);  // Sync state to Blynk
   }
 }
 
@@ -81,17 +81,17 @@ bool checkWeakSignal() {
 
 void loop() {
 
-    // Đảm bảo gọi Blynk.run() để xử lý các giao tiếp của Blynk
+    // Make sure to call Blynk.run() to handle Blynk communications
   Blynk.run();
-    // 1. Kiểm tra trạng thái nút D5
+    // 1. Check D5 button status
     offSystem = (digitalRead(btn) == LOW);
 
-    // 2. Nếu offSystem thì chỉ tắt Light, không đụng vào Red & Green
+    // 2. If offSystem then only turn off Light, do not touch Red & Green
     if (offSystem) {
         digitalWrite(Light, LOW);
     }
 
-    // 3. Quét Wi-Fi
+    // 3. Wi-Fi Scan
     int n = WiFi.scanNetworks();
     bool found = false;
 
@@ -106,14 +106,14 @@ void loop() {
             bufferIndex = (bufferIndex + 1) % BUFFER_SIZE;
 
             if (!checkWeakSignal()) {
-                // Tín hiệu mạnh
+                // Strong signal
                 digitalWrite(Red, LOW);
                 digitalWrite(Green, HIGH);
                 if (!offSystem) {
                     digitalWrite(Light, HIGH);
                 }
             } else {
-                // Tín hiệu yếu
+                //Weak signal
                 digitalWrite(Red, HIGH);
                 digitalWrite(Green, LOW);
                 digitalWrite(Light, LOW);
@@ -125,7 +125,7 @@ void loop() {
     }
 
     if (!found) {
-        // Không tìm thấy AP -> nhấp nháy Red, Green/Light OFF
+        // No AP found -> flashing Red, Green/Light OFF
         digitalWrite(Green, LOW);
         digitalWrite(Light, LOW);
 
@@ -140,9 +140,9 @@ void loop() {
   syncLEDState(Green, V1, greenVirtualState);
   syncLEDState(Light, V2, lightVirtualState);
 
-    // Nếu cần đồng bộ trạng thái gửi lên (ví dụ: Blynk hoặc khác), xử lý ở đây
+    // If you need to sync the sent state (e.g. Blynk or other), handle it here
     // if (signal1 != signal2) {
-    //     signal2 = signal1;
-    //     // Gửi trạng thái qua mạng
+    //     signal2 = signal1;        
+    //     // Send status over network
     // }
 }
