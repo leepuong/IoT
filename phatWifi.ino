@@ -1,11 +1,11 @@
 #include <ESP8266WiFi.h>
 
-const char *ssid = "ESP8266_AP";  // Tên Wi-Fi ESP8266 phát ra
-const char *password = "12345678";  // Mật khẩu (tối thiểu 8 ký tự)
+const char *ssid = "ESP8266_AP";  // ESP8266 Wi-Fi name emitted
+const char *password = "12345678";  // Password (minimum 8 characters)
 #define LED_PIN 2
 void setup() {
     Serial.begin(115200);
-    WiFi.softAP(ssid, password);  // Bật Access Point
+    WiFi.softAP(ssid, password);  // Enable Access Point
     Serial.println("ESP8266 AP Mode Started!");
     Serial.print("SSID: "); Serial.println(ssid);
     Serial.print("IP Address: "); Serial.println(WiFi.softAPIP());
