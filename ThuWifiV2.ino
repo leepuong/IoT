@@ -17,7 +17,8 @@ const int btn = D5;
 
 #define RSSI_THRESHOLD -45
 #define BUFFER_SIZE 5
-#define BLINK_INTERVAL 500    // nháy Red mỗi 500ms
+#define BLINK_INTERVAL 500    
+// Flashes Red every 500ms
 
 
 long rssiBuffer[BUFFER_SIZE] = {0};
