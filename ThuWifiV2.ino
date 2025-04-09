@@ -61,7 +61,7 @@ void setup() {
     digitalWrite(Light, LOW);
 
     
-  // Khởi tạo kết nối Blynk
+  // Initialize Blynk connection
   Blynk.begin(auth, ssid, pass);
 }
 
